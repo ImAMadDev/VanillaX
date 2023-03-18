@@ -76,17 +76,20 @@ class ItemManager{
     }
 
     private function initializeCreativeItems(): void{
+        $oldCreativeItems = CreativeInventory::getInstance()->getAll();
+        CreativeInventory::getInstance()->clear();
+        $creativeItems = json_decode(Filesystem::fileGetContents(Path::join(RESOURCE_PATH, "legacy_creativeitems.json")), true);
 
-        $old = CreativeInventory::getInstance();
-        CreativeInventory::reset();
-        $new = CreativeInventory::getInstance();
-
-        foreach($old->getAll() as $item){
-            if(!$new->contains($item)){
-                $new->add($item);
+        foreach($creativeItems as $data){
+            $item = Item::jsonDeserialize($data);
+            if($item->getName() === "Unknown"){
+                continue;
             }
+            CreativeInventory::getInstance()->add($item);
         }
-
+        foreach($oldCreativeItems as $item){
+            if(!CreativeInventory::getInstance()->contains($item)) CreativeInventory::getInstance()->add($item);
+        }
     }
 
     public static function register(Item $item, bool $creative = false, bool $overwrite = true): bool{
