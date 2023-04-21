@@ -364,7 +364,7 @@ class ItemStackRequestHandler{
         if($humanIndex > ($maxIndex = count($inventory->getAll()))){
             throw new Exception("received CreativeCreateStackRequestAction, expected index below $maxIndex, received $humanIndex.");
         }
-        $ev = new CreativeCreateItemStackEvent($player, $inventory->getItem($humanIndex - 1), $humanIndex);
+        $ev = new CreativeCreateItemStackEvent($player, $inventory->getItem($humanIndex), $humanIndex);
         $ev->call();
 
         if($ev->isCancelled()){
